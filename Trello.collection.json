@@ -1,0 +1,536 @@
+{
+	"info": {
+		"_postman_id": "a96dce5c-5c44-4297-89fa-c811fedb7ae4",
+		"name": "Trello",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tworzenie nowej tablicy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test(\"should verify status code \",() =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody= pm.response.json();\r",
+							"})\r",
+							"pm.test(\"should verify created board name\", () =>{\r",
+							"    pm.expect(resBody.name).to.eql(pm.collectionVariables.get(\"boardName\"));\r",
+							"})\r",
+							"pm.test(\"should verify response id\", () => {\r",
+							"    pm.collectionVariables.set(\"boardId\",resBody.id);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/boards/?name={{boardName}}&key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{boardName}}"
+						},
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wyświetlanie listy tablic",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test(\"Should verify status code\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"Should verify type of name \",() => {\r",
+							"    resBody.map(item=> {\r",
+							"        pm.expect(item.name).to.be.a(\"string\");\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/members/me/boards/?key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"members",
+						"me",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie listy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test(\"should verify status code\",()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"should verify response listName\", () =>{\r",
+							"    pm.expect(resBody.name).to.eql(pm.collectionVariables.get(\"listName\"));\r",
+							"})\r",
+							"pm.collectionVariables.set(\"listId\", resBody.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/boards/{{boardId}}/lists?name={{listName}}&key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boardId}}",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{listName}}"
+						},
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wyświetlanie list w danej tablicy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"sould verify closed value\", ()=>{\r",
+							"    resBody.map(item => {\r",
+							"        pm.expect(item.closed).to.eql(false);\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/boards/{{boardId}}/lists?key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boardId}}",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tworzenie karty w liscie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"should verify List ID and Board Id\", () =>{\r",
+							"    pm.expect(resBody.idList).to.eql(pm.collectionVariables.get(\"listId\"));\r",
+							"    pm.expect(resBody.idBoard).to.eql(pm.collectionVariables.get(\"boardId\"));\r",
+							"})\r",
+							"pm.collectionVariables.set(\"cardId\", resBody.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/cards/?idList={{listId}}&key={{App-Key}}&token={{Token}}&name={{cardName}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						""
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{listId}}"
+						},
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{cardName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pobieranie wszystkich kart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"should verify status code\", ()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"should verify type of shortLink\", () =>{\r",
+							"    resBody.map(item =>{\r",
+							"        pm.expect(item.shortLink).to.be.a(\"string\");\r",
+							"    })\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/boards/{{boardId}}/cards?key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boardId}}",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Zmiana nazwy karty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test (\"should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})\r",
+							"pm.test(\"should verify different name\", () =>{\r",
+							"    pm.expect(resBody.name).not.eql(pm.collectionVariables.get(\"cardName\"));\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/cards/{{cardId}}?key={{App-Key}}&token={{Token}}&name={{updateCardName}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{cardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{updateCardName}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie karty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test (\"should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/cards/{{cardId}}?key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{cardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuwanie tablicy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"pm.test (\"should verify status code\", () =>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    resBody = pm.response.json();\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/1/boards/{{boardId}}?key={{App-Key}}&token={{Token}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{App-Key}}"
+						},
+						{
+							"key": "token",
+							"value": "{{Token}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "https://api.trello.com"
+		},
+		{
+			"key": "App-Key",
+			"value": "d46f61a210a12b179ba3f38d6f0c943d"
+		},
+		{
+			"key": "Token",
+			"value": "786a7a94b33c89a04ebd05c3fb572fb29f88cd9f769e4104766096bc76f863bc"
+		},
+		{
+			"key": "boardName",
+			"value": "Tablica z API"
+		},
+		{
+			"key": "boardId",
+			"value": ""
+		},
+		{
+			"key": "listName",
+			"value": "Lista testowa z API",
+			"type": "string"
+		},
+		{
+			"key": "listId",
+			"value": ""
+		},
+		{
+			"key": "cardName",
+			"value": "Karta testowa z API",
+			"type": "string"
+		},
+		{
+			"key": "cardId",
+			"value": ""
+		},
+		{
+			"key": "updateCardName",
+			"value": "Zmieniona nazwa karty z API",
+			"type": "string"
+		}
+	]
+}
